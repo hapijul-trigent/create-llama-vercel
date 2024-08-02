@@ -13,15 +13,19 @@ from app.core.config import settings
 from app.db.session import engine
 from app.db.base import Base
 
-# Configure logging
-logging.basicConfig(level=logging.DEBUG)
+# Add backend directory to PYTHONPATH
+current_dir = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.join(current_dir, "..", ".."))
 
 # Create all tables in the database
-Base.metadata.create_all(bind=engine)
+async def create_db_and_tables():
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
     version=settings.API_VERSION,
+    lifespan=create_db_and_tables
 )
 
 app.add_middleware(
