@@ -1,31 +1,43 @@
-from typing import List
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
+from app.services.todo import crud_todo
 from app.schemas.todo import Todo, TodoCreate, TodoUpdate
-from app.services.todo import create_todo, get_todos, get_todo, update_todo, delete_todo
-from app.db.session import get_db
+from app.db.session import get_session
 
 router = APIRouter()
 
 @router.post("/", response_model=Todo)
-def create_todo_item(todo: TodoCreate, db: Session = Depends(get_db)):
-    return create_todo(db=db, todo=todo)
+async def create_todo(
+    *, db: AsyncSession = Depends(get_session), todo_in: TodoCreate
+):
+    todo = await crud_todo.create(db=db, obj_in=todo_in)
+    return todo
 
-@router.get("/", response_model=List[Todo])
-def read_todos(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
-    return get_todos(db, skip=skip, limit=limit)
-
-@router.get("/{todo_id}", response_model=Todo)
-def read_todo(todo_id: int, db: Session = Depends(get_db)):
-    db_todo = get_todo(db, todo_id=todo_id)
-    if db_todo is None:
+@router.get("/{id}", response_model=Todo)
+async def read_todo(
+    *, db: AsyncSession = Depends(get_session), id: int
+):
+    todo = await crud_todo.get(db=db, id=id)
+    if not todo:
         raise HTTPException(status_code=404, detail="Todo not found")
-    return db_todo
+    return todo
 
-@router.put("/{todo_id}", response_model=Todo)
-def update_todo_item(todo_id: int, todo: TodoUpdate, db: Session = Depends(get_db)):
-    return update_todo(db=db, todo_id=todo_id, todo=todo)
+@router.put("/{id}", response_model=Todo)
+async def update_todo(
+    *, db: AsyncSession = Depends(get_session), id: int, todo_in: TodoUpdate
+):
+    todo = await crud_todo.get(db=db, id=id)
+    if not todo:
+        raise HTTPException(status_code=404, detail="Todo not found")
+    todo = await crud_todo.update(db=db, db_obj=todo, obj_in=todo_in)
+    return todo
 
-@router.delete("/{todo_id}", response_model=Todo)
-def delete_todo_item(todo_id: int, db: Session = Depends(get_db)):
-    return delete_todo(db=db, todo_id=todo_id)
+@router.delete("/{id}", response_model=Todo)
+async def delete_todo(
+    *, db: AsyncSession = Depends(get_session), id: int
+):
+    todo = await crud_todo.get(db=db, id=id)
+    if not todo:
+        raise HTTPException(status_code=404, detail="Todo not found")
+    todo = await crud_todo.remove(db=db, id=id)
+    return todo
