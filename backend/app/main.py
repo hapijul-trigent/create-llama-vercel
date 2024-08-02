@@ -4,6 +4,13 @@ from app.api.v1.endpoints import todos
 from app.core.config import settings
 from app.db.session import engine
 from app.db.base import Base
+import os, sys
+
+# Add app to $PATH
+module_path = os.path.join(os.getcwd(), 'my_app')
+sys.path.append(
+    os.getcwd()
+)
 
 # Create all tables in the database
 Base.metadata.create_all(bind=engine)
