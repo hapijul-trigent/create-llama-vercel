@@ -7,9 +7,11 @@ from app.db.base import Base
 import os, sys
 
 # Add app to $PATH
-module_path = os.path.join(os.getcwd(), 'my_app')
 sys.path.append(
     os.getcwd()
+)
+sys.path.append(
+    os.path.join(os.getcwd('..'), 'app')
 )
 
 # Create all tables in the database
