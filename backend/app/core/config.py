@@ -6,9 +6,14 @@ from pydantic import ValidationError
 logging.basicConfig(level=logging.DEBUG)
 
 class Settings(BaseSettings):
-    PROJECT_NAME: str = "FastAPI Todo App"
-    API_VERSION: str = "1.0.0"
+    PROJECT_NAME: str
+    API_VERSION: str
     DATABASE_URL: str
+    DATABASE_HOST: str
+    DATABASE_NAME: str
+    DATABASE_USER: str
+    DATABASE_PASSWORD: str
+    DATABASE_PORT: str
 
     class Config:
         env_file = ".env"
