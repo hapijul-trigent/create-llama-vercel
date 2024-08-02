@@ -12,15 +12,21 @@ from app.api.v1.endpoints import todos
 from app.core.config import settings
 from app.db.session import engine
 from app.db.base import Base
+from typing import AsyncGenerator
 
 # Add backend directory to PYTHONPATH
 current_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.join(current_dir, "..", ".."))
 
 # Create all tables in the database
-async def create_db_and_tables():
+async def create_db_and_tables() -> None:
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+
+async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
+    # Startup event
+    await create_db_and_tables()
+    yield
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
