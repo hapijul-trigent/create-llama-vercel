@@ -1,4 +1,4 @@
-import os, sys
+import os, sys, logging
 
 # Add app to $PATH
 # Get the current file's directory
@@ -13,7 +13,8 @@ from app.core.config import settings
 from app.db.session import engine
 from app.db.base import Base
 
-
+# Configure logging
+logging.basicConfig(level=logging.DEBUG)
 
 # Create all tables in the database
 Base.metadata.create_all(bind=engine)
