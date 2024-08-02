@@ -19,13 +19,13 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.join(current_dir, "..", ".."))
 
 # Create all tables in the database
-async def create_db_and_tables() -> None:
+async def create_db_and_tables(app: FastAPI) -> None:
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     # Startup event
-    await create_db_and_tables()
+    await create_db_and_tables(app=app)
     yield
 
 app = FastAPI(

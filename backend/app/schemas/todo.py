@@ -15,7 +15,7 @@ class TodoInDBBase(TodoBase):
     id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class Todo(TodoInDBBase):
     pass
