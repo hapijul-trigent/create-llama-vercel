@@ -4,7 +4,7 @@ import os, sys
 # Get the current file's directory
 current_dir = os.path.dirname(os.path.abspath(__file__))
 # Append the parent directory of the current file's directory to sys.path
-sys.path.append('/opt/render/project/src/backend/app')
+sys.path.append('/opt/render/project/src/backend')
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
