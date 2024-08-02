@@ -1,5 +1,5 @@
 from pydantic_settings import BaseSettings
-import logging
+import logging, os
 from pydantic import ValidationError
 
 # Configure logging
