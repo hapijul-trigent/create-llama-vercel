@@ -1,5 +1,6 @@
 fastapi
 uvicorn
 pydantic-settings
-asyncpg 
 sqlalchemy[asyncio]
+psycopg2
+asyncpg 
