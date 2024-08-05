@@ -1,40 +1,34 @@
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.future import select
+from sqlalchemy.orm import Session
 from app.db.models.todo import Todo
 from app.schemas.todo import TodoCreate, TodoUpdate
 
-class CRUDTodo:
-    async def create(self, db: AsyncSession, *, obj_in: TodoCreate) -> Todo:
-        db_obj = Todo(
-            title=obj_in.title,
-            description=obj_in.description,
-            completed=obj_in.completed,
-        )
-        db.add(db_obj)
-        await db.commit()
-        await db.refresh(db_obj)
-        return db_obj
+def get_todo(db: Session, todo_id: int):
+    return db.query(Todo).filter(Todo.id == todo_id).first()
 
-    async def get(self, db: AsyncSession, id: int) -> Todo:
-        result = await db.execute(select(Todo).filter(Todo.id == id))
-        return result.scalars().first()
+def get_todos(db: Session, skip: int = 0, limit: int = 10):
+    return db.query(Todo).offset(skip).limit(limit).all()
 
-    async def update(
-        self, db: AsyncSession, *, db_obj: Todo, obj_in: TodoUpdate
-    ) -> Todo:
-        obj_data = obj_in.model_dump(exclude_unset=True)
-        for field in obj_data:
-            setattr(db_obj, field, obj_data[field])
-        db.add(db_obj)
-        await db.commit()
-        await db.refresh(db_obj)
-        return db_obj
+def create_todo(db: Session, todo: TodoCreate):
+    db_todo = Todo(**todo.model_dump())
+    db.add(db_todo)
+    db.commit()
+    db.refresh(db_todo)
+    return db_todo
 
-    async def remove(self, db: AsyncSession, *, id: int) -> Todo:
-        result = await db.execute(select(Todo).filter(Todo.id == id))
-        obj = result.scalars().first()
-        await db.delete(obj)
-        await db.commit()
-        return obj
+def update_todo(db: Session, todo_id: int, todo: TodoUpdate):
+    db_todo = get_todo(db, todo_id)
+    if db_todo is None:
+        return None
+    for key, value in todo.model_dump().items():
+        setattr(db_todo, key, value)
+    db.commit()
+    db.refresh(db_todo)
+    return db_todo
 
-crud_todo = CRUDTodo()
+def delete_todo(db: Session, todo_id: int):
+    db_todo = get_todo(db, todo_id)
+    if db_todo is None:
+        return None
+    db.delete(db_todo)
+    db.commit()
+    return db_todo

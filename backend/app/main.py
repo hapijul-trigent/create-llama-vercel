@@ -1,4 +1,4 @@
-import os, sys, logging
+import os, sys
 
 # Add app to $PATH
 # Get the current file's directory
@@ -13,28 +13,15 @@ from app.api.v1.endpoints import todos
 from app.core.config import settings
 from app.db.session import engine
 from app.db.base import Base
-from typing import AsyncGenerator
-from contextlib import asynccontextmanager
 
-# Add backend directory to PYTHONPATH
-current_dir = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(os.path.join(current_dir, "..", ".."))
+
 
 # Create all tables in the database
-async def create_db_and_tables(app: FastAPI) -> None:
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-
-@asynccontextmanager
-async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
-    # Startup event
-    await create_db_and_tables(app=app)
-    yield
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title=settings.APP_NAME,
     version=settings.API_VERSION,
-    lifespan=create_db_and_tables
 )
 
 app.add_middleware(

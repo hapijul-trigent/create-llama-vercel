@@ -1,10 +1,8 @@
+import os
 from pydantic_settings import BaseSettings
-import logging, os
-from pydantic import ValidationError
 
-# Configure logging
-logging.basicConfig(level=logging.DEBUG)
 
+# Settings
 class Settings(BaseSettings):
     DATABASE_HOST: str
     DATABASE_NAME: str
@@ -19,16 +17,4 @@ class Settings(BaseSettings):
     class Config:
         env_file = "../.env"
 
-
-# Log environment variables for debugging
-logging.debug("Environment Variables:")
-for key, value in os.environ.items():
-    logging.debug(f"{key}: {value}")
-
-# Initialize settings
-try:
-    settings = Settings()
-    logging.info("Settings loaded successfully")
-except ValidationError as e:
-    logging.error("Settings validation error: %s", e)
-    raise e
+settings = Settings()
