@@ -6,17 +6,19 @@ from pydantic import ValidationError
 logging.basicConfig(level=logging.DEBUG)
 
 class Settings(BaseSettings):
-    PROJECT_NAME: str
-    API_VERSION: str
-    DATABASE_URL: str
     DATABASE_HOST: str
     DATABASE_NAME: str
     DATABASE_USER: str
     DATABASE_PASSWORD: str
     DATABASE_PORT: str
+    APP_NAME: str
+    API_VERSION: str
+    INTERNAL_DATABASE_URL: str
+    DATABASE_URL: str
 
     class Config:
-        env_file = ".env"
+        env_file = "../.env"
+
 
 # Log environment variables for debugging
 logging.debug("Environment Variables:")

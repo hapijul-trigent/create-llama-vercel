@@ -5,6 +5,7 @@ import os, sys, logging
 current_dir = os.path.dirname(os.path.abspath(__file__))
 # Append the parent directory of the current file's directory to sys.path
 sys.path.append('/opt/render/project/src/backend')
+sys.path.append('/workspaces/todo/backend')
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -31,7 +32,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     yield
 
 app = FastAPI(
-    title=settings.PROJECT_NAME,
+    title=settings.APP_NAME,
     version=settings.API_VERSION,
     lifespan=create_db_and_tables
 )

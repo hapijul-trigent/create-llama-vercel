@@ -1,5 +1,8 @@
 fastapi
-uvicorn
-pydantic-settings
-sqlalchemy[asyncio]
-asyncpg 
+uvicorn[standard]
+sqlalchemy
+alembic 
+psycopg2 
+pytest 
+requests 
+pydantic_settings
