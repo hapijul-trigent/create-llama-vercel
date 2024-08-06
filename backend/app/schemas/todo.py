@@ -1,18 +1,18 @@
 from pydantic import BaseModel
 
-class TodoBase(BaseModel):
+class TodoLLMBase(BaseModel):
     title: str
     description: str
     completed: bool = False
     llmNote: str
 
-class TodoCreate(TodoBase):
+class TodoCreate(TodoLLMBase):
     pass
 
-class TodoUpdate(TodoBase):
+class TodoUpdate(TodoLLMBase):
     pass
 
-class TodoInDBBase(TodoBase):
+class TodoInDBBase(TodoLLMBase):
     id: int
 
     class Config:
