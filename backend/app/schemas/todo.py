@@ -4,7 +4,7 @@ class TodoLLMBase(BaseModel):
     title: str
     description: str
     completed: bool = False
-    llmNote: str = ''
+    llmNote: str = 'CLick to generate from LLM'
 
 class TodoCreate(TodoLLMBase):
     pass
